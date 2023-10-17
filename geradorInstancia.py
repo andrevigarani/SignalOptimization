@@ -32,10 +32,10 @@ def geraInstancia(file_name, pontosDemanda, locaisCandidatos):
 pontosDemanda = 10
 locaisCandidatos = 10
 for i in range(15):
-    geraInstancia(f'instanciaPequena{i+1}.txt', pontosDemanda, locaisCandidatos)
+    geraInstancia(f'./instancias/instanciaPequena{i+1}.txt', pontosDemanda, locaisCandidatos)
 
 #Gerando as instâncias maiores:
 pontosDemanda = 100
 locaisCandidatos = 100
 for i in range(15):
-    geraInstancia(f'instanciaGrande{i+1}.txt', pontosDemanda, locaisCandidatos)
+    geraInstancia(f'./instancias/instanciaGrande{i+1}.txt', pontosDemanda, locaisCandidatos)
