@@ -1,14 +1,15 @@
 from pyomo.environ import *
 from glob import glob
 
-A = None # Quantidade de locais candidatos
-B = None # Quantidade de pontos de demanda
-C = None # Custo das antenas
-D = None # Alcance das antenas
-nx = None # Coordenada x de pontos de demanda
-ny = None # Coordenada y de pontos de demanda
-mx = None # Coordenada x de locais candidatos
-my = None # Coordenada y de locais candidatos
+A = None  # Quantidade de locais candidatos
+B = None  # Quantidade de pontos de demanda
+C = None  # Custo das antenas
+D = None  # Alcance das antenas
+nx = None  # Coordenada x de pontos de demanda
+ny = None  # Coordenada y de pontos de demanda
+mx = None  # Coordenada x de locais candidatos
+my = None  # Coordenada y de locais candidatos
+
 
 def read_instance(instance):
     global A, B, C, D, mx, my, nx, ny
@@ -34,9 +35,27 @@ def read_instance(instance):
             mx.append(int(line.split(' ')[1]))
             my.append(int(line.split(' ')[2]))
 
+
 def solve():
     # Criação do modelo
     model = ConcreteModel()
+
+    # Variáveis de decisão
+    model.a = Var(range(A), domain=Boolean)
+    model.b = Var(range(B), domain=Boolean)
+
+    # Função objetivo
+
+    # Restrições
+
+    # Solução
+    opt = SolverFactory('glpk')
+    # opt.solve(model).write()
+    opt.solve(model)
+    # for i in range(n):
+    #    print(model.x[i]())
+    return model.obj.expr()
+
 
 for instance in glob('./instanciaPequena1.txt'):
     read_instance(instance)
