@@ -44,8 +44,8 @@ def solve():
     model = ConcreteModel()
 
     # Variáveis de decisão
-    model.a = Var(range(A), domain = Binary)
-    model.b = Var(range(B), domain = Binary)
+    model.a = Var(range(A), domain = Boolean)
+    model.b = Var(range(B), domain = Boolean)
 
     # Função objetivo
     model.obj = Objective(expr=sum([C * model.a[i] for i in range(A)])+sum([min([distance(i, j) for j in range(B)]) * model.b[i] for i in range(B)]),sense=minimize)
