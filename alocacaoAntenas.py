@@ -61,9 +61,11 @@ def solve():
 
     model.varBinaria = ConstraintList()
     for i in range(B):
-        model.varBinaria.add(0 <= model.b[i] <= 1)
+        model.varBinaria.add(model.b[i] <= 1)
+        model.varBinaria.add(0 <= model.b[i])
     for j in range(A):
-        model.varBinaria.add(0 <= model.a[j] <= 1)
+        model.varBinaria.add(model.a[j] <= 1)
+        model.varBinaria.add(0 <= model.a[j])
 
     # Solução
     opt = SolverFactory('glpk')
