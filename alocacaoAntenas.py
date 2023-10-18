@@ -87,12 +87,12 @@ def solve():
     print("\nValor da Função Objetivo:")
     print(model.obj.expr())
     
-    # Number of unattended demand points
+    # Número de Pontos não atendidos
     unattended_demand = sum(1 - model.b[i]() for i in range(B))
     print(f"Número de Pontos Não Atendidos: {unattended_demand}")
 
 
-# for instance in glob('./instancias/*'):
+# Laço de Instâncias desejadas:
 for instance in glob('./instancias/instanciaGrande1.txt'):
     read_instance(instance)
     print(instance[instance.rindex('/') + 1:] + ': ', end='')
