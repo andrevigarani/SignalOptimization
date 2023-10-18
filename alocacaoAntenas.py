@@ -49,12 +49,18 @@ def solve():
 
     # Função objetivo
     model.obj = Objective(expr=sum([C * model.a[j] for j in range(A)])
-                               +sum([min([distance(i,j) for j in range(A)]) * model.b[i] for i in range(B)]),sense=minimize)
+                               +sum([min([distance(i,j) for j in range(A)]) * model.b[i] for i in range(B)]),sense=maximize)
 
     # Restricoes
     model.cons = ConstraintList()
+
+    # Restrição para garantir que pelo menos uma antena seja alocada
     for i in range(B):
         model.cons.add(expr=sum(model.a[j] for j in range(A)) >= 1)
+
+    # Restrição para garantir que pelo menos uma antena seja alocada para cada ponto de demanda
+    for i in range(B):
+        model.cons.add(expr=sum(model.a[j] for j in range(A) if distance(i,j) <= D) >= model.b[i])
 
     # Solução
     solver = SolverFactory('glpk')
@@ -66,7 +72,7 @@ def solve():
     for i in range(B):
         print(f'Ponto de demanda {i+1}: {model.b[i]()}')
 
-for instance in glob('./instancias/instanciaPequena1.txt'):
+for instance in glob('./instancias/*'):
     read_instance(instance)
     print(instance[instance.rindex('/') + 1:] + ': ', end = '')
     solve()
