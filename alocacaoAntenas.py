@@ -44,36 +44,24 @@ def solve():
     model = ConcreteModel()
 
     # Variáveis de decisão
-    model.a = Var(range(A), domain = Boolean)
-    model.b = Var(range(B), domain = Boolean)
+    model.a = Var(range(A), domain = Binary)
+    model.b = Var(range(B), domain = Binary)
 
     # Função objetivo
     model.obj = Objective(expr=sum([C * model.a[i] for i in range(A)])+sum([min([distance(i, j) for j in range(B)]) * model.b[i] for i in range(B)]),sense=minimize)
 
-    # Restrições
-    # for i in range(B): model.con1 = Constraint(expr=sum([model.a[j] for j in range(A)]) >= 1)
-    # for i in range(B): model.con2 = Constraint(expr= model.b[i] in [0, 1])
-    # for j in range(A): model.con3 = Constraint(expr= model.a[j] in [0, 1])
-
-    model.peloMenosUmaAntena = ConstraintList()
+    # Restricoes
+    model.cons = ConstraintList()
     for i in range(B):
-        model.peloMenosUmaAntena.add(sum(model.a[j] for j in range(A)) >= 1)
-
-    model.varBinaria = ConstraintList()
-    for i in range(B):
-        model.varBinaria.add(model.b[i] <= 1)
-        model.varBinaria.add(0 <= model.b[i])
-    for j in range(A):
-        model.varBinaria.add(model.a[j] <= 1)
-        model.varBinaria.add(0 <= model.a[j])
+        model.cons.add(expr=sum(model.a[j] for j in range(A)) >= 1)
 
     # Solução
     opt = SolverFactory('glpk')
     opt.solve(model)
+    # return model.obj.expr()
     return model.obj.expr()
 
-
-for instance in glob('./instancias/instanciaPequena1.txt'):
+for instance in glob('./instancias/instanciaPequena5.txt'):
     read_instance(instance)
     print(instance[instance.rindex('/') + 1:] + ': ', end = '')
     print(solve())
