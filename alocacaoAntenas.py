@@ -72,6 +72,9 @@ def solve():
     for i in range(B):
         print(f'Ponto de demanda {i+1}: {model.b[i]()}')
 
+
+    print(model.obj.expr())
+
 for instance in glob('./instancias/*'):
     read_instance(instance)
     print(instance[instance.rindex('/') + 1:] + ': ', end = '')
