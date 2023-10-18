@@ -48,8 +48,8 @@ def solve():
     model.b = Var(range(B), domain = Binary)
 
     # Função objetivo
-    model.obj = Objective(expr=sum([C * model.a[j] for j in range(A)])
-                               +sum([min([distance(i,j) for j in range(A)]) * model.b[i] for i in range(B)]),sense=maximize)
+    model.obj = Objective(expr=(sum([C * model.a[j] for j in range(A)])
+                               +sum([min([distance(i,j) for j in range(A)]) * model.b[i] for i in range(B)]))*1,sense=maximize)
 
     # Restricoes
     model.cons = ConstraintList()
@@ -75,7 +75,8 @@ def solve():
 
     print(model.obj.expr())
 
-for instance in glob('./instancias/*'):
+# for instance in glob('./instancias/*'):
+for instance in glob('./instancias/instanciaPequena1.txt'):
     read_instance(instance)
     print(instance[instance.rindex('/') + 1:] + ': ', end = '')
     solve()
