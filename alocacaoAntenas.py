@@ -48,7 +48,8 @@ def solve():
     model.b = Var(range(B), domain = Binary)
 
     # Função objetivo
-    model.obj = Objective(expr=sum([C * model.a[i] for i in range(A)])+sum([min([distance(i, j) for j in range(B)]) * model.b[i] for i in range(B)]),sense=minimize)
+    model.obj = Objective(expr=sum([C * model.a[j] for j in range(A)])
+                               +sum([min([distance(i,j) for j in range(A)]) * model.b[i] for i in range(B)]),sense=minimize)
 
     # Restricoes
     model.cons = ConstraintList()
@@ -56,12 +57,16 @@ def solve():
         model.cons.add(expr=sum(model.a[j] for j in range(A)) >= 1)
 
     # Solução
-    opt = SolverFactory('glpk')
-    opt.solve(model)
-    # return model.obj.expr()
-    return model.obj.expr()
+    solver = SolverFactory('glpk')
+    results = solver.solve(model, timelimit=200)
+    print()
+    for j in range(A):
+        print(f'Antena {j+1}: {model.a[j]()}')
 
-for instance in glob('./instancias/instanciaPequena5.txt'):
+    for i in range(B):
+        print(f'Ponto de demanda {i+1}: {model.b[i]()}')
+
+for instance in glob('./instancias/instanciaPequena1.txt'):
     read_instance(instance)
     print(instance[instance.rindex('/') + 1:] + ': ', end = '')
-    print(solve())
+    solve()
