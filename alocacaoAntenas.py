@@ -48,8 +48,8 @@ def solve():
     model.b = Var(range(B), domain = Binary)
 
     # Função objetivo
-    model.obj = Objective(expr=(sum([C * model.a[j] for j in range(A)])
-                               +sum([min([distance(i,j) for j in range(A)]) * model.b[i] for i in range(B)]))*1,sense=maximize)
+    model.obj = Objective(expr=sum([C * model.a[j] for j in range(A)])*-1
+                               +sum([min([distance(i,j) for j in range(A)]) * model.b[i] for i in range(B)]),sense=maximize)
 
     # Restricoes
     model.cons = ConstraintList()
