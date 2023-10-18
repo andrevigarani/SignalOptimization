@@ -35,7 +35,7 @@ for i in range(15):
     geraInstancia(f'./instancias/instanciaPequena{i+1}.txt', pontosDemanda, locaisCandidatos)
 
 #Gerando as instâncias maiores:
-pontosDemanda = 100
-locaisCandidatos = 100
+pontosDemanda = 700
+locaisCandidatos =700
 for i in range(15):
     geraInstancia(f'./instancias/instanciaGrande{i+1}.txt', pontosDemanda, locaisCandidatos)
