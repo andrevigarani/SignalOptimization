@@ -35,7 +35,7 @@ Imprime o valor da função objetivo.
 Por fim, há um loop que percorre todos os arquivos de instância no diretório 'instancias' e aplica as funções read_instance e solve a cada instância.
 
 
-#Gerador de instâncias
+# Gerador de instâncias
 Sem sucesso em encontrar instâncias para nosso problema , implementamos um gerador de instâncias para o problema de localização de instalações de diferentes tamanhos e salva os dados em arquivos de texto.
 
 Define uma função geraInstancia que recebe três argumentos: o nome do arquivo de destino, o número de pontos de demanda e o número de locais candidatos. A função cria um arquivo de texto e escreve os dados da instância, incluindo o número de locais candidatos, o número de pontos de demanda, o custo das antenas (fixo em 7000) e o alcance das antenas (fixo em 10000).
