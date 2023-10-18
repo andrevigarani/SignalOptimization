@@ -65,14 +65,21 @@ def solve():
     # Solução
     solver = SolverFactory('glpk')
     results = solver.solve(model, timelimit=200)
-    print()
+
+    # Verificar se a solução é ótima
+    if (results.solver.status == SolverStatus.ok) and (results.solver.termination_condition == TerminationCondition.optimal):
+        print("Solução Ótima Encontrada!")
+    else:
+        print("O Solver não encontrou uma solução ótima.")
+
     for j in range(A):
         print(f'Antena {j+1}: {model.a[j]()}')
 
     for i in range(B):
         print(f'Ponto de demanda {i+1}: {model.b[i]()}')
 
-
+    # Valor da função objetivo
+    print("\nValor da Função Objetivo:")
     print(model.obj.expr())
 
 # for instance in glob('./instancias/*'):
