@@ -55,8 +55,7 @@ def solve():
     model.cons = ConstraintList()
 
     # Restrição para garantir que pelo menos uma antena seja alocada
-    for i in range(B):
-        model.cons.add(expr=sum(model.a[j] for j in range(A)) >= 1)
+    model.cons.add(expr=sum(model.a[j] for j in range(A)) >= 1)
 
     # Restrição para garantir que pelo menos uma antena seja alocada para cada ponto de demanda
     for i in range(B):
