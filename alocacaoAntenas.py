@@ -41,15 +41,20 @@ def solve():
     model = ConcreteModel()
 
     # Variáveis de decisão
-    model.a = Var(range(A), domain=Binary)
-    model.b = Var(range(B), domain=Binary)
+    model.a = Var(range(A), domain=Binary, initialize=0)
+    model.b = Var(range(B), domain=Binary, initialize=0)
 
     # Função objetivo
-    model.obj = Objective(
-        expr=sum(C * model.a[j] for j in range(A))
-             + sum(min(distance(i, j) if model.a[j] == 1 else float('inf') for j in range(A)) for i in range(B)),
-        sense=minimize
-    )
+    def obj_rule(model):
+        # First part of the objective: the cost of opening facilities
+        part1 = sum(C * model.a[j] for j in range(A))
+
+        # Second part of the objective: distance to the closest open facility for each demand point
+        part2 = sum(min(distance(i, j)) * model.b[i] for i in range(B) for j in range(A) if value(model.a[j]) == 1)
+
+        return part1 + part2
+
+    model.obj = Objective(rule=obj_rule, sense=minimize)
 
     # Restricoes
     model.cons = ConstraintList()
@@ -63,7 +68,7 @@ def solve():
 
     # Solução
     solver = SolverFactory('glpk')
-    results = solver.solve(model, timelimit=200)
+    results = solver.solve(model)
 
     # Verificar se a solução é ótima
     is_optimal = (results.solver.status == SolverStatus.ok) and (results.solver.termination_condition == TerminationCondition.optimal)
