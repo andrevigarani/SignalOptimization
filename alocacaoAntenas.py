@@ -45,17 +45,10 @@ def solve():
     model.b = Var(range(B), domain=Binary)
 
     # Função objetivo
-    # model.obj = Objective(
-    #     expr=sum([C * model.a[j] for j in range(A)]) * -1
-    #          + sum([min([distance(i, j) for j in range(A)]) * model.b[i] for i in range(B)]),
-    #     sense=maximize
-    # )
-
-    # tentatica de corrigir a Função objetivo mas tem q testar
     model.obj = Objective(
-        expr=sum([C * model.a[j] for j in range(A)])
-             + sum([min([distance(i, j) for j in range(A)]) for i in range(B)]),
-        sense=maximize
+        expr=sum(C * model.a[j] for j in range(A))
+             + sum(min(distance(i, j) if model.a[j] == 1 else float('inf') for j in range(A)) for i in range(B)),
+        sense=minimize
     )
 
     # Restricoes
