@@ -44,17 +44,16 @@ def solve():
     model.a = Var(range(A), domain=Binary, initialize=0)
     model.b = Var(range(B), domain=Binary, initialize=0)
 
-    # Função objetivo
-    def obj_rule(model):
-        # First part of the objective: the cost of opening facilities
-        part1 = sum(C * model.a[j] for j in range(A))
+    model.obj = Objective(
+        expr=sum(model.b[i] for i in range(B)) * 100 -
+             sum(C * model.a[j] for j in range(A)) -
+            sum(min(distance(i, j)) for j in range(A) if value(model.a[j]) == 1 for i in range(B)),
+        sense=maximize)
 
-        # Second part of the objective: distance to the closest open facility for each demand point
-        part2 = sum(min(distance(i, j)) * model.b[i] for i in range(B) for j in range(A) if value(model.a[j]) == 1)
-
-        return part1 + part2
-
-    model.obj = Objective(rule=obj_rule, sense=minimize)
+    # model.obj = Objective(
+    #     expr=sum(C * model.a[j] for j in range(A)) +
+    #         sum(min(distance(i, j)) for j in range(A) if value(model.a[j]) == 1 for i in range(B)),
+    #     sense=minimize)
 
     # Restricoes
     model.cons = ConstraintList()
