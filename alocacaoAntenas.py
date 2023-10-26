@@ -37,6 +37,12 @@ def distance(i, j):
     return ((mx[i] - nx[j]) ** 2 + (my[i] - ny[j]) ** 2) ** 0.5
 
 def solve():
+
+    n = B
+    m = A
+    P = 999999      # penalty
+    K = 100000      # importance factor
+
     # Criação do modelo
     model = ConcreteModel()
 
@@ -50,27 +56,35 @@ def solve():
     #        sum(min(distance(i, j)) for j in range(A) if value(model.a[j]) == 1 for i in range(B)),
     #    sense=maximize)
 
-    model.obj = Objective(
-        expr=sum(model.b[i] for i in range(B)) * 50 -
-             sum(C * model.a[j] for j in range(A)) -
-             sum(min([distance(i, j) for j in range(A) if value(model.a[j]) == 1]) for i in range(B)),
-        sense=maximize)
-
+    # model.obj = Objective(
+    #     expr=sum(model.b[i] for i in range(B)) * 50 -
+    #          sum(C * model.a[j] for j in range(A)) -
+    #          sum(min([distance(i, j) for j in range(A) if value(model.a[j]) == 1]) for i in range(B)),
+    #     sense=maximize)
 
     # model.obj = Objective(
     #     expr=sum(C * model.a[j] for j in range(A)) +
     #         sum(min(distance(i, j)) for j in range(A) if value(model.a[j]) == 1 for i in range(B)),
     #     sense=minimize)
 
+    model.obj = Objective(
+        expr=K * sum(model.b[i] for i in range(n)) -
+             sum(C * model.a[j] for j in range(m)) -
+             sum(min([distance(i, j) for j in range(m) if value(model.a[j]) == 0] + [P]) for i in range(n)),
+        sense=maximize
+    )
+
     # Restricoes
     model.cons = ConstraintList()
 
-    # Restrição para garantir que pelo menos uma antena seja alocada
-    model.cons.add(expr=sum(model.a[j] for j in range(A)) >= 1)
-
     # Restrição para garantir que pelo menos uma antena seja alocada para cada ponto de demanda
-    for i in range(B):
-        model.cons.add(expr=sum(model.a[j] for j in range(A) if distance(i, j) <= D) >= model.b[i])
+    for i in range(n):
+        model.cons.add(
+            expr=sum(model.a[j] for j in range(m) if distance(i, j) <= D) >= model.b[i]
+        )
+
+    # Restrição para garantir que pelo menos uma antena seja alocada
+    model.cons.add(expr=sum(model.a[j] for j in range(m)) >= 1)
 
     # Solução
     solver = SolverFactory('glpk')
@@ -103,7 +117,7 @@ def solve():
 
 
 # Laço de Instâncias desejadas:
-for instance in glob('./instancias/instanciaGrande1.txt'):
+for instance in glob('./instancias/instanciaPequena2.txt'):
     read_instance(instance)
     print(instance[instance.rindex('/') + 1:] + ': ', end='')
     solve()
