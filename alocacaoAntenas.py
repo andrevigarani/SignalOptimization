@@ -44,11 +44,18 @@ def solve():
     model.a = Var(range(A), domain=Binary, initialize=0)
     model.b = Var(range(B), domain=Binary, initialize=0)
 
+    #model.obj = Objective(
+    #    expr=sum(model.b[i] for i in range(B)) * 50 -
+    #         sum(C * model.a[j] for j in range(A)) -
+    #        sum(min(distance(i, j)) for j in range(A) if value(model.a[j]) == 1 for i in range(B)),
+    #    sense=maximize)
+
     model.obj = Objective(
-        expr=sum(model.b[i] for i in range(B)) * 100 -
+        expr=sum(model.b[i] for i in range(B)) * 50 -
              sum(C * model.a[j] for j in range(A)) -
-            sum(min(distance(i, j)) for j in range(A) if value(model.a[j]) == 1 for i in range(B)),
+             sum(min([distance(i, j) for j in range(A) if value(model.a[j]) == 1]) for i in range(B)),
         sense=maximize)
+
 
     # model.obj = Objective(
     #     expr=sum(C * model.a[j] for j in range(A)) +
