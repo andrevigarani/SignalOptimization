@@ -1,17 +1,21 @@
+import sys
 from pyomo.environ import *
 from glob import glob
+
+instancia = sys.argv[1]
 
 A = None  # Quantidade de locais candidatos
 B = None  # Quantidade de pontos de demanda
 C = None  # Custo das antenas
 D = None  # Alcance das antenas
+K = None  # Indicador de importância
 nx = None  # Coordenada x de pontos de demanda
 ny = None  # Coordenada y de pontos de demanda
 mx = None  # Coordenada x de locais candidatos
 my = None  # Coordenada y de locais candidatos
 
 def read_instance(instance):
-    global A, B, C, D, mx, my, nx, ny
+    global A, B, C, D, K, mx, my, nx, ny
     nx = []
     ny = []
     mx = []
@@ -24,6 +28,7 @@ def read_instance(instance):
             B = int(line.split(' ')[3])
             C = int(line.split(' ')[5])
             D = int(line.split(' ')[7])
+            K = int(line.split(' ')[9])
             first = False
             continue
         if (line.split(' ')[0] == 'n'):
@@ -41,7 +46,6 @@ def solve():
     n = B
     m = A
     P = 999999      # penalty
-    K = 100000      # importance factor
 
     # Criação do modelo
     model = ConcreteModel()
@@ -49,6 +53,9 @@ def solve():
     # Variáveis de decisão
     model.a = Var(range(A), domain=Binary, initialize=0)
     model.b = Var(range(B), domain=Binary, initialize=0)
+
+    print(K)
+    print(K)
 
     # IMPLEMENTAÇÃO DO PROFESSOR PARA O ARTIGO COM O K
     model.obj = Objective(
@@ -94,14 +101,32 @@ def solve():
     # Valor da função objetivo
     print("\nValor da Função Objetivo:")
     print(model.obj.expr())
-    
-    # Número de Pontos não atendidos
-    unattended_demand = sum(1 - model.b[i]() for i in range(B))
-    print(f"Número de Pontos Não Atendidos: {unattended_demand}")
+
+    # Número de Antenas alocadas
+    alocated_points = sum(model.a[j]() for j in range(A))
+    print(f"Número de Antenas Alocadas: {alocated_points}")
+
+    # Número de Pontos atendidos
+    attended_demand = sum(model.b[i]() for i in range(B))
+    print(f"Número de Pontos Atendidos: {attended_demand}")
 
 
-# Laço de Instâncias desejadas:
-for instance in glob('./instancias/instanciaPequena2.txt'):
-    read_instance(instance)
-    print(instance[instance.rindex('/') + 1:] + ': ', end='')
-    solve()
+isEntrou = False # validadação de erro
+if instancia == 'T' or instancia == 't':
+    for instance in glob('./instancias/*'):
+        read_instance(instance)
+        print(instance[instance.rindex('/') + 1:] + ': ', end='')
+        solve()
+        isEntrou = True
+else:
+    for instance in glob(f'./instancias/{instancia}'):
+        read_instance(instance)
+        print(instance[instance.rindex('/') + 1:] + ': ', end='')
+        solve()
+        isEntrou = True
+
+if isEntrou == False:
+    print('Instância informada não existe!')
+    print('Aplicar GRASP em uma instância específica use: python alocacaoAntenaGRASP <nome da instancia>.txt <percentual de aleatoriedade, valor entre 0 e 1>')
+    print('Aplicar GRASP em todas as instâncias use: python alocacaoAntenaGRASP <T> <percentual de aleatoriedade, valor entre 0 e 1>')
+    sys.exit(1)
