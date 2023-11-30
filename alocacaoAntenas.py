@@ -28,7 +28,7 @@ def read_instance(instance):
             B = int(line.split(' ')[3])
             C = int(line.split(' ')[5])
             D = int(line.split(' ')[7])
-            K = int(line.split(' ')[9])
+            K = int(line.split(' ')[11])
             first = False
             continue
         if (line.split(' ')[0] == 'n'):
