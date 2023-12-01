@@ -4,16 +4,6 @@ from glob import glob
 
 instancia = sys.argv[1]
 
-A = None  # Quantidade de locais candidatos
-B = None  # Quantidade de pontos de demanda
-C = None  # Custo das antenas
-D = None  # Alcance das antenas
-K = None  # Indicador de importância
-nx = None  # Coordenada x de pontos de demanda
-ny = None  # Coordenada y de pontos de demanda
-mx = None  # Coordenada x de locais candidatos
-my = None  # Coordenada y de locais candidatos
-
 def read_instance(instance):
     global A, B, C, D, K, mx, my, nx, ny
     nx = []
@@ -39,7 +29,7 @@ def read_instance(instance):
             my.append(int(line.split(' ')[2]))
 
 def distance(i, j):
-    return ((mx[i] - nx[j]) ** 2 + (my[i] - ny[j]) ** 2) ** 0.5
+    return ((mx[j] - nx[i]) ** 2 + (my[j] - ny[i]) ** 2) ** 0.5
 
 def solve():
 
