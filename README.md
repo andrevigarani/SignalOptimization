@@ -1,47 +1,154 @@
-# SignalOptimization
-Esse código Python é um script que resolve um problema de localização de instalações usando o Pyomo e o solucionador GLPK. O código lê dados de entrada de um arquivo de instância, define um modelo de otimização matemática e, em seguida, o resolve. Aqui está uma explicação detalhada do que o código faz:
+# Repositório
 
-Importa as bibliotecas necessárias: Pyomo e o módulo glob.
+Disponível em:
+  
+    https://github.com/tobiasfkk/metodos_quantitativos
 
-Define variáveis globais para os parâmetros do problema: A (número de locais candidatos), B (número de pontos de demanda), C (custo das antenas), D (alcance das antenas), nx e ny (coordenadas dos pontos de demanda), mx e my (coordenadas dos locais candidatos).
+# Gerador de Instâncias
 
-Implementa uma função read_instance para ler os dados da instância de um arquivo. A função extrai os valores de A, B, C, D, nx e ny.
+Gerador de instâncias cria dois modelos de instâncias: grandes e pequenas, ambas em formato txt e com parâmetros de entrada configuráveis pelo usuário.
 
-Implementa uma função distance para calcular a distância entre dois pontos usando a fórmula da distância euclidiana.
+Parâmetros de entrada:
 
-Implementa a função solve, que cria um modelo matemático concreto do Pyomo para o problema de localização de instalações.
+    <comprimento da área> = quilômetro
+    <largura da área> = quilômetro
+    <custo das antenas> = moeda (real por exemplo)
+    <alcance das antenas> = quilômetro
+    <instâncias pequenas> = unidade numérica
+    <pontos demanda instâncias pequenas> = unidade numérica
+    <locais candidatos instâncias pequenas> = unidade numérica
+    <instâncias grandes> = unidade numérica
+    <pontos demanda instâncias grandes> = unidade numérica
+    <locais candidatos instâncias grandes> = unidade numérica
+    <máximo de iterações grasp>  = valor máximo de iterações do GRASP
+    <valor K da função objetivo> = Peso K presente na função objetivo
 
-Define variáveis de decisão:
+Uso: 
 
-a é uma variável binária que indica se uma antena é colocada em cada local candidato.
-b é uma variável binária que indica se cada ponto de demanda é coberto por pelo menos uma antena.
-Define a função objetivo, que maximiza o benefício total (negativo do custo):
+    python geradorInstancia.py <comprimento da área> <largura da área> <custo das antenas> <alcance das antenas> <instâncias pequenas> <pontos demanda instâncias pequenas> <locais candidatos instâncias pequenas> <instâncias grandes> <pontos demanda instâncias grandes> <locais candidatos instâncias grandes> <máximo de iterações grasp> <valor K da função objetivo>
 
-O primeiro termo minimiza o custo total de colocar antenas.
-O segundo termo minimiza a distância ponderada total dos pontos de demanda para as antenas.
-Adiciona restrições:
+Exemplo 1: 
 
-Garante que pelo menos uma antena seja colocada.
-Garante que cada ponto de demanda seja coberto por pelo menos uma antena dentro do alcance especificado.
-Usa o solucionador GLPK para resolver o problema de otimização com um limite de tempo de 200 segundos.
+    python geradorInstancia.py 33000 30000 7000 10000 5 30 30 5 100 100 1000 100000
 
-Verifica se o solucionador encontrou uma solução ótima e, se sim, imprime os resultados:
+Exemplo 2:
 
-Imprime se uma solução ótima foi encontrada.
-Imprime as decisões binárias para a colocação de antenas nos locais candidatos.
-Imprime as decisões binárias para cobrir os pontos de demanda.
-Imprime o valor da função objetivo.
+    python geradorInstancia.py 33000 30000 7000 10000 8 98 25 8 403 56 10000 100000
 
-Por fim, há um loop que percorre todos os arquivos de instância no diretório 'instancias' e aplica as funções read_instance e solve a cada instância.
+Executando pelo terminal algum dos comandos exemplificados acima, serão gerados dois grupos de instâncias, pequenas e grandes.
 
+As intâncias serão criadas no caminho *.../métodos_quantitativos/instancias* e estarão ordenadas pelo nome, exemplo:
 
-# Gerador de instâncias
-Sem sucesso em encontrar instâncias para nosso problema , implementamos um gerador de instâncias para o problema de localização de instalações de diferentes tamanhos e salva os dados em arquivos de texto.
+    instanciaGrande1.txt
+    instanciaGrande2.txt
+    instanciaGrande3.txt
+    instanciaGrande4.txt
+    instanciaGrande5.txt
+    instanciaPequena1.txt
+    instanciaPequena2.txt
+    instanciaPequena3.txt
+    instanciaPequena4.txt
+    instanciaPequena5.txt
 
-Define uma função geraInstancia que recebe três argumentos: o nome do arquivo de destino, o número de pontos de demanda e o número de locais candidatos. A função cria um arquivo de texto e escreve os dados da instância, incluindo o número de locais candidatos, o número de pontos de demanda, o custo das antenas (fixo em 7000) e o alcance das antenas (fixo em 10000).
+Usando de exemplo o conteúdo(fictício) de instanciaPequena1.txt:
 
-Gera coordenadas aleatórias para os pontos de demanda e os locais candidatos usando a biblioteca random. Para cada ponto de demanda e local candidato, são gerados valores aleatórios de coordenadas x e y dentro de faixas específicas (0 a 33000 para x e 0 a 30000 para y).
+    A 10 B 10 C 7000 D 10000 mi 1000 K 1
+    n 26788 8132
+    n 22363 20166
+    n 30812 3771
+    n 14762 29883
+    n 21769 4274
+    n 15873 7925
+    n 5537 12268
+    n 21405 11142
+    n 29449 6580
+    n 2395 28331
+    m 6999 16544
+    m 14925 1992
+    m 8608 12367
+    m 13679 26235
+    m 24312 11078
+    m 9131 3976
+    m 11523 120
+    m 18744 28332
+    m 19392 11397
+    m 11924 15064
 
-Chama a função geraInstancia duas vezes: primeiro, para gerar 15 instâncias pequenas com 10 pontos de demanda e 10 locais candidatos, e depois para gerar 15 instâncias maiores com 100 pontos de demanda e 100 locais candidatos. Os arquivos de instância são nomeados de acordo com o tamanho e uma sequência numérica.
+Definições:
+    
+    A = Quantidade de locais candidatos
+    B = Quantidade de pontos de demanda
+    C = Custo das antenas
+    D = Alcance das antenas
+    n = <Coordenada x do ponto de demanda> <Coordenada y do ponto de demanda>
+    m = <Coordenada x do local candidato> <Coordenada y do local candidato>
+    mi = Máximo de iterações do GRASP
+    K = Peso K da função objetivo
 
-No geral, esse código é usado para criar dados de entrada (instâncias) para um problema de localização de instalações. Ele gera diferentes tamanhos de instâncias com números aleatórios de pontos de demanda e locais candidatos, que podem ser usados como entrada para o código que você forneceu anteriormente para resolver o problema de localização de instalações. Essa geração de instâncias é útil para testar e avaliar o desempenho do algoritmo de resolução em diferentes cenários.
+Os valores m e n são gerados aleatoriamente respeitando os valores de comprimento e largura especificados.
+
+Cada execução do gerador exclui as instâncias existentes da pasta e gera novos arquivos .txt.
+
+# Resolvendo instância(s) - modelo matemático - GLPK
+
+Uso:
+    
+- Aplicando modelo matemático em uma instância específica:
+
+      python alocacaoAntena.py <nome da instancia>.txt
+
+- Aplicando modelo matemático em todas as instâncias:
+
+      python alocacaoAntena.py T 
+
+Exemplo:
+    
+- Aplicando modelo matemático em uma instância específica:
+
+      python alocacaoAntena.py instanciaPequena1.txt
+
+- Aplicando modelo matemático em todas as instâncias:
+
+      python alocacaoAntena.py T
+
+Lembrando que só é possível aplicar a heurística nas instâncias presentes no caminho:
+
+    .../métodos_quantitativos/instancias
+
+Parâmetros de entrada:
+
+    <nome da instância> = nome do arquivo texto localizado no caminho .../métodos_quantitativos/instancias
+
+# Resolvendo instância(s) - GRASP
+ 
+Uso:
+    
+- Aplicando heurística GRASP em uma instância específica:
+
+      python alocacaoAntenaGRASP.py <nome da instancia>.txt <percentual de gulosidade> 
+- Aplicando heurística GRASP em todas as instâncias:
+
+      python alocacaoAntenaGRASP.py T <percentual de gulosidade> 
+
+Exemplo:
+    
+- Aplicando heurística GRASP em uma instância específica:
+
+      python alocacaoAntenaGRASP.py instanciaPequena1.txt 0.5
+
+- Aplicando heurística GRASP em todas as instâncias:
+
+      python alocacaoAntenaGRASP.py T 0.5
+
+Lembrando que só é possível aplicar a heurística nas instâncias presentes no caminho:
+
+    .../métodos_quantitativos/instancias
+
+Parâmetros de entrada:
+
+    <nome da instância> = nome do arquivo texto localizado no caminho .../métodos_quantitativos/instancias
+    <percentual de aleatoriedade> = percentual da aleatoriedade aplicada na heurística construtiva - valor entre 0 e 1
+
+0 = 0% ALEATÓRIO
+
+1 = 100% ALEATÓRIO

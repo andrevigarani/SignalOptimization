@@ -81,12 +81,12 @@ def solve():
 
     # Mostrar resultados das antenas e pontos de demanda
     print("Resultado da Alocação das Antenas:")
-    for j in range(A):
-        print(f'Antena {j + 1}: {model.a[j]()}')
-
-    print("Resultado da Cobertura dos Pontos de Demanda:")
-    for i in range(B):
-        print(f'Ponto de demanda {i + 1}: {model.b[i]()}')
+    # for j in range(A):
+    #     print(f'Antena {j + 1}: {model.a[j]()}')
+    #
+    # print("Resultado da Cobertura dos Pontos de Demanda:")
+    # for i in range(B):
+    #     print(f'Ponto de demanda {i + 1}: {model.b[i]()}')
 
     # Valor da função objetivo
     print("\nValor da Função Objetivo:")
@@ -104,6 +104,7 @@ def solve():
 isEntrou = False # validadação de erro
 if instancia == 'T' or instancia == 't':
     for instance in glob('./instancias/*'):
+        print("\n\n")
         read_instance(instance)
         print(instance[instance.rindex('/') + 1:] + ': ', end='')
         solve()
